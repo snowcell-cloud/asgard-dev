@@ -130,7 +130,7 @@ class TransformationService:
             executor_cores=req.executor_cores,
             executor_instances=req.executor_instances,
             executor_memory=req.executor_memory,
-            spark_image="637423187518.dkr.ecr.eu-north-1.amazonaws.com/spark-custom:5b616a8764472fb5024401e729d673a84a41145a"
+            spark_image="637423187518.dkr.ecr.eu-north-1.amazonaws.com/spark-custom:latest"
         )
         
         try:

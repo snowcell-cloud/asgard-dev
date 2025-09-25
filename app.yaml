@@ -1,0 +1,56 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: iceberg-writer
+  namespace: asgard
+spec:
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: bitnami/spark:3.3.2
+  mainApplicationFile: local:///opt/spark/app/transform.py   # ⬅ matches mountPath below
+  sparkVersion: "3.3.2"
+  restartPolicy:
+    type: Never
+
+  driver:
+    cores: 1
+    memory: "2g"
+    serviceAccount: spark-sa
+    volumeMounts:
+      - name: job-code
+        mountPath: /opt/spark/app   # ⬅ this directory must exist in container
+    envSecretKeyRefs:
+      AWS_ACCESS_KEY_ID:
+        name: s3-credentials
+        key: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        name: s3-credentials
+        key: AWS_SECRET_ACCESS_KEY
+      AWS_REGION:
+        name: s3-credentials
+        key: AWS_REGION
+
+  executor:
+    cores: 1
+    instances: 1
+    memory: "2g"
+    serviceAccount: spark-sa
+    volumeMounts:
+      - name: job-code
+        mountPath: /opt/spark/app   # ⬅ same as driver
+    envSecretKeyRefs:
+      AWS_ACCESS_KEY_ID:
+        name: s3-credentials
+        key: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY:
+        name: s3-credentials
+        key: AWS_SECRET_ACCESS_KEY
+      AWS_REGION:
+        name: s3-credentials
+        key: AWS_REGION
+
+  volumes:
+    - name: job-code
+      configMap:
+        name: spark-job-code

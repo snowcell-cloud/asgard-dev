@@ -20,7 +20,7 @@ data:
     from pyspark.sql import SparkSession
 
     def main():
-        print("🚀 Starting SQL transformation...")
+        print(" Starting SQL transformation realconfigmap...")
         
         # Get configuration from environment variables
         sql_query = os.getenv("SQL_QUERY")
